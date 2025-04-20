@@ -1,5 +1,7 @@
 package com.example.docsgrid.entity;
 
-public class DocDraft extends BaseEntity {
+import java.util.Map;
 
+public class DocDraft extends BaseEntity {
+    private Map<String, Object> structure;
 }
