@@ -23,18 +23,28 @@ public class DocDraft extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String structure;
 
-    public DocDraft(String title, Map<String, Object> structureMap) throws JsonProcessingException {
+    public DocDraft(String title, Map<String, Object> structureMap) {
         this.title = title;
         setStructure(structureMap);
     }
 
-    public void setStructure(Map<String, Object> structureMap) throws JsonProcessingException {
+    // Заглушки з e.PrintStackTrace треба потім прибрати та додати логгер
+    public void setStructure(Map<String, Object> structureMap) /*throws JsonProcessingException*/ {
         ObjectMapper objectMapper = new ObjectMapper();
-        this.structure = objectMapper.writeValueAsString(structureMap);
+        try {
+            this.structure = objectMapper.writeValueAsString(structureMap);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Map<String, Object> getStructure() throws JsonProcessingException {
+    public Map<String, Object> getStructure() /*throws JsonProcessingException*/ {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(this.structure, Map.class);
+        try {
+            return objectMapper.readValue(this.structure, Map.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
