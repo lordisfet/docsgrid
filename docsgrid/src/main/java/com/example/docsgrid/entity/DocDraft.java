@@ -3,7 +3,10 @@ package com.example.docsgrid.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,30 +24,64 @@ public class DocDraft extends BaseEntity {
 
     @Lob
     @Column(columnDefinition = "TEXT")
+    @Getter
     private String structure;
 
-    public DocDraft(String title, Map<String, Object> structureMap) {
-        this.title = title;
-        setStructure(structureMap);
+    /**
+     * Set new structure as a string with keys in {} braces.
+     * There must be no duplicates or blank keys
+     * @param structure New structure
+     */
+    public void setStructure(String structure) {
+        if (structure == null || structure.isBlank()) {
+            throw new IllegalArgumentException("Structure cannot be null or blank.");
+        }
+
+        if (getStructureKeys(structure, '{', '}') == null) {
+            throw new IllegalArgumentException("Structure are not validated.");
+        }
+
+        this.structure = structure;
     }
 
-    // Заглушки з e.PrintStackTrace треба потім прибрати та додати логгер
-    public void setStructure(Map<String, Object> structureMap) /*throws JsonProcessingException*/ {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            this.structure = objectMapper.writeValueAsString(structureMap);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
+    /**
+     * Get keys from the structure
+     * @param structure Structure as a string with keys in braces
+     * @param openBrace Open brace
+     * @param closeBrace Close brace
+     * @return List with keys if structure validated, otherwise null
+     */
+    public static List<String> getStructureKeys(String structure, char openBrace, char closeBrace) {
+        List<String> substrings = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        int depth = 0;
+        int start = -1;
 
-    public Map<String, Object> getStructure() /*throws JsonProcessingException*/ {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(this.structure, Map.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
+        for (int i = 0; i < structure.length(); i++) {
+            char c = structure.charAt(i);
+
+            if (c == openBrace) {
+                if (depth == 0) {
+                    start = i + 1;
+                }
+                depth++;
+            } else if (c == closeBrace) {
+                depth--;
+                if (depth < 0) {
+                    // invalid structure (close brace without open brace)
+                    return null;
+                }
+                if (depth == 0) {
+                    String content = structure.substring(start, i);
+                    if (content.isBlank() || !seen.add(content)) {
+                        // duplicate key or blank key
+                        return null;
+                    }
+                    substrings.add(content);
+                }
+            }
         }
+
+        return depth == 0 ? substrings : null;
     }
 }
