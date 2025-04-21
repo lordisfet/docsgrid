@@ -8,7 +8,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ public class Doc extends BaseEntity {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
-    private Date signedAt;
+    private LocalDateTime signedAt;
 
     @ManyToOne
     private DocDraft draft;
