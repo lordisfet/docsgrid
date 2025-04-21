@@ -25,13 +25,23 @@ public class Doc extends BaseEntity {
     @ManyToOne
     private DocDraft draft;
 
-    public void setContent(Map<String, Objects> contentMap) throws JsonProcessingException {
+    // Заглушки з e.PrintStackTrace треба потім прибрати та додати логгер
+    public void setContent(Map<String, Objects> contentMap) /*throws JsonProcessingException*/ {
         ObjectMapper objectMapper = new ObjectMapper();
-        this.content = objectMapper.writeValueAsString(contentMap);
+        try {
+            this.content = objectMapper.writeValueAsString(contentMap);
+        } catch (JsonProcessingException e){
+            e.printStackTrace();
+        }
     }
 
-    public Map<String, Objects> getContent() throws JsonProcessingException {
+    public Map<String, Objects> getContent() /*throws JsonProcessingException*/ {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(this.content, Map.class);
+        try {
+            return objectMapper.readValue(this.content, Map.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
