@@ -15,10 +15,10 @@ public class DocToCompany implements IEntity {
     private DocToCompanyId id;
 
     @ManyToOne
-    @MapsId("docId")
+    @MapsId("companyId")
     private Company company;
 
     @ManyToOne
-    @MapsId("companyId")
+    @MapsId("docId")
     private Doc doc;
 }
