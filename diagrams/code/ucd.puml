@@ -1,0 +1,32 @@
+@startuml
+'skinparam packageStyle rectangle
+title How user interacts with application
+
+left to right direction
+
+actor Guest
+usecase "Registration" as Reg
+Guest --> Reg
+
+
+actor User
+usecase "Login" as Log
+usecase "Create document" as CreateDoc
+usecase "Read document" as ReadDoc
+usecase "Send document to signature" as SendDocToSign
+usecase "Sign document" as SignDoc
+User --> Log
+User --> CreateDoc
+User --> ReadDoc
+User --> SendDocToSign
+User --> SignDoc
+
+
+actor Admin
+usecase "Create document template" as CreateDocTemplate
+usecase "Edit document template" as EditDocTemplate
+Admin --> CreateDocTemplate
+Admin --> EditDocTemplate
+Admin -up-> Log
+
+@enduml
