@@ -1,0 +1,91 @@
+'@startuml
+'skinparam class {
+'    BackgroundColor #D0E5F5
+'    BorderColor Black
+'    ArrowColor Black
+'    FontSize 12
+'}
+'skinparam enum {
+'    BackgroundColor #D0E5F5
+'    BorderColor Black
+'    FontSize 12
+'}
+'skinparam interface {
+'    BackgroundColor White
+'    BorderColor Black
+'    FontSize 12
+'}
+'
+'' Интерфейс
+'interface IEntity
+'
+'' Базовая сущность
+'class BaseEntity {
+'  - Id: int
+'}
+'
+'IEntity <|.. BaseEntity
+'
+'' Базовый пользователь
+'class BaseUser {
+'  - type: TypeOfUser
+'  - TIN: String
+'}
+'
+'BaseEntity <|-- BaseUser
+'
+'' Сотрудник
+'class Employee {
+'  - fullName: String
+'  - company: Company
+'}
+'
+'BaseUser <|-- Employee
+'
+'' Компания
+'class Company {
+'  - companyName: String
+'  - registrationNumber: String
+'}
+'
+'' Тип пользователя (перечисление)
+'enum TypeOfUser {
+'  - typeOfUser: String
+'}
+'
+'BaseUser --> TypeOfUser
+'Company --> TypeOfUser
+'
+'Employee --> Company
+'
+'' Документ
+'class Document {
+'}
+'
+'BaseEntity <|-- Document
+'
+'' Шаблон документа
+'class DocumentTemplate {
+'}
+'
+'BaseEntity <|-- DocumentTemplate
+'
+'DocumentTemplate "1" -- "*" Document
+'
+'' Связь Документов и Пользователей
+'class DocumentToUser {
+'}
+'
+'BaseEntity <|-- DocumentToUser
+'
+'Document "1" -- "*" DocumentToUser
+'DocumentToUser "*" -- "*" BaseUser
+'
+'' Отношение (перечисление)
+'enum Relation {
+'  - status: String
+'}
+'
+'DocumentToUser "1" -- "1" Relation
+'
+'@enduml
